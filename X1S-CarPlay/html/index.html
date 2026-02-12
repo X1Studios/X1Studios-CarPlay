@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="app">
+
+    <div class="carplay">
+
+        <!-- Close Button -->
+        <button class="close" onclick="closeUI()">✕</button>
+
+        <!-- Album Art -->
+        <img id="album">
+
+        <!-- Song Info -->
+        <div class="info">
+            <div id="title">Nothing Playing</div>
+            <div id="artist"></div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button id="playpause" onclick="toggle()">▶</button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress">
+            <div id="bar"></div>
+        </div>
+
+        <!-- Song Link Input -->
+        <input id="link" placeholder="Paste YouTube Link">
+
+        <!-- Submit Song Button -->
+        <button id="playbtn" onclick="submit()">Submit Song</button>
+
+        <!-- Volume Control -->
+        <div class="volwrap">
+            Volume
+            <input id="vol" type="range" min="0" max="1" step="0.01" onchange="vol(this.value)">
+        </div>
+
+    </div>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>

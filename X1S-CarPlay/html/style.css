@@ -1,0 +1,147 @@
+/* General Body */
+body {
+    margin: 0;
+    background: transparent;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* App Container */
+#app {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* CarPlay Container */
+.carplay {
+    width: 420px;
+    background: rgba(20, 20, 20, 0.95);
+    border-radius: 28px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 0 50px black;
+}
+
+/* Album Art */
+#album {
+    width: 100%;
+    border-radius: 18px;
+    margin-bottom: 12px;
+}
+
+/* Song Info */
+.info {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#artist {
+    opacity: 0.7;
+    font-size: 14px;
+}
+
+/* Controls Container */
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0;
+}
+
+/* Play/Pause Button */
+#playpause {
+    background-color: black;
+    color: red;
+    border: 2px solid red;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#playpause:hover {
+    background-color: red;
+    color: black;
+}
+
+/* Progress Bar */
+.progress {
+    width: 100%;
+    height: 6px;
+    background: #333;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#bar {
+    height: 100%;
+    width: 0%;
+    background: red;
+    transition: width 0.2s linear;
+}
+
+/* Input Field */
+#link {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+}
+
+/* Submit Song Button */
+#playbtn {
+    display: block;            /* Center button */
+    margin: 12px auto 0 auto;  /* Top spacing, centered horizontally */
+    background-color: black;
+    color: red;
+    border: 2px solid red;
+    border-radius: 8px;
+    padding: 12px 25px;        /* Bigger clickable area */
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#playbtn:hover {
+    background-color: red;
+    color: black;
+}
+
+/* Close Button */
+.close {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* Volume Control */
+.volwrap {
+    margin-top: 15px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+input[type=range] {
+    width: 60%;
+    accent-color: red;
+}
