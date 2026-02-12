@@ -1,2 +1,2 @@
 1.0.0
-https://raw.githubusercontent.com/X1Studios/X1Studios-CarPlay/blob/main/version.txt
+https://raw.githubusercontent.com/X1Studios/X1Studios-CarPlay/main/version.txt
