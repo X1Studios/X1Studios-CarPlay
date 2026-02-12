@@ -55,7 +55,7 @@ end)
 local resourceName = GetCurrentResourceName()
 local currentVersion = GetResourceMetadata(resourceName, 'version', 0)
 
-local versionUrl = "https://github.com/X1Studios/X1Studios-CarPlay/blob/main/version.txt"
+local versionUrl = "https://raw.githubusercontent.com/X1Studios/X1Studios-CarPlay/blob/main/version.txt"
 
 local function CheckForUpdates()
     PerformHttpRequest(versionUrl, function(statusCode, responseText, headers)
@@ -83,3 +83,4 @@ CreateThread(function()
     Wait(3000)
     CheckForUpdates()
 end)
+
