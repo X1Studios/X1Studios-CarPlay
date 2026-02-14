@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'X1Studios'
 description 'CarPlay'
-version '1.0.0'
+version '1.0.1'
 
 ui_page 'html/index.html'
 
@@ -19,3 +19,4 @@ client_scripts {
 }
 
 server_script 'server.lua'
+
