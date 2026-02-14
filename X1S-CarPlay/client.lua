@@ -2,6 +2,22 @@ local vehicleNet = nil
 local soundId = nil
 
 -------------------------------------------------
+-- SAFE NET TO VEH
+-------------------------------------------------
+local function GetVehicleFromNet(net)
+    if not net or net <= 0 then return 0 end
+    if not NetworkDoesNetworkIdExist(net) then return 0 end
+
+    local veh = NetToVeh(net)
+
+    if veh == 0 or not DoesEntityExist(veh) then
+        return 0
+    end
+
+    return veh
+end
+
+-------------------------------------------------
 -- Open CarPlay
 -------------------------------------------------
 RegisterCommand("carplay", function()
@@ -29,12 +45,15 @@ RegisterNUICallback("play", function(data, cb)
     if not IsPedInAnyVehicle(ped, false) then cb("fail") return end
 
     local veh = GetVehiclePedIsIn(ped, false)
+
+    if veh == 0 then cb("fail") return end
+
     vehicleNet = NetworkGetNetworkIdFromEntity(veh)
     soundId = "car_" .. vehicleNet
 
     if exports.xsound:soundExists(soundId) then
         exports.xsound:Destroy(soundId)
-        Wait(50) -- allow xsound to fully release stream
+        Wait(100)
     end
 
     TriggerServerEvent("x1s:playSong", {
@@ -76,7 +95,17 @@ end)
 -- Sync Song From Server
 -------------------------------------------------
 RegisterNetEvent("x1s:syncSong", function(data)
-    local veh = NetToVeh(data.net)
+
+    local timeout = 0
+    local veh = GetVehicleFromNet(data.net)
+
+    -- wait for entity to exist (fixes warning)
+    while veh == 0 and timeout < 50 do
+        Wait(100)
+        veh = GetVehicleFromNet(data.net)
+        timeout = timeout + 1
+    end
+
     if veh == 0 then return end
 
     vehicleNet = data.net
@@ -84,7 +113,7 @@ RegisterNetEvent("x1s:syncSong", function(data)
 
     if exports.xsound:soundExists(soundId) then
         exports.xsound:Destroy(soundId)
-        Wait(50)
+        Wait(100)
     end
 
     exports.xsound:PlayUrlPos(
@@ -116,7 +145,9 @@ CreateThread(function()
         Wait(300)
 
         if soundId and exports.xsound:soundExists(soundId) then
-            local veh = NetToVeh(vehicleNet)
+
+            local veh = GetVehicleFromNet(vehicleNet)
+
             if veh ~= 0 then
                 exports.xsound:Position(soundId, GetEntityCoords(veh))
             end
@@ -133,15 +164,6 @@ CreateThread(function()
             end
         end
     end
-end)
-
-RegisterNetEvent("x1s:updateCarPos", function(net, coords)
-    if not net or net <= 0 then return end
-
-    local veh = NetToVeh(net)
-    if veh == 0 or not DoesEntityExist(veh) then return end
-
-    -- update position here
 end)
 
 -------------------------------------------------
