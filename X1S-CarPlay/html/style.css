@@ -1,4 +1,6 @@
-/* General Body */
+/* ============================= */
+/* General Body                  */
+/* ============================= */
 body {
     margin: 0;
     background: transparent;
@@ -6,23 +8,43 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* App Container */
+/* ============================= */
+/* App Container                 */
+/* ============================= */
 #app {
     display: none;
+}
+
+/* ============================= */
+/* LEFT: Main CarPlay Container  */
+/* ============================= */
+#menuTitle {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    color: white;
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+#mainUI {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    width: 420px;
 }
 
-/* CarPlay Container */
 .carplay {
-    width: 420px;
+    width: 100%;
     background: rgba(20, 20, 20, 0.95);
     border-radius: 28px;
     padding: 20px;
     color: white;
     box-shadow: 0 0 50px black;
+    position: relative;
 }
 
 /* Album Art */
@@ -48,15 +70,17 @@ body {
     font-size: 14px;
 }
 
-/* Controls Container */
+/* ============================= */
+/* Controls                      */
+/* ============================= */
 .controls {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 15px 0;
+    gap: 10px;
 }
 
-/* Play/Pause Button */
 #playpause {
     background-color: black;
     color: red;
@@ -66,6 +90,7 @@ body {
     font-size: 24px;
     cursor: pointer;
     transition: 0.2s;
+    outline: none;
 }
 
 #playpause:hover {
@@ -73,7 +98,50 @@ body {
     color: black;
 }
 
-/* Progress Bar */
+#playpause:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+#skipbtn {
+    background-color: black;
+    border: 2px solid red;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+    outline: none;
+
+    height: 53px;
+    min-width: 60px;
+    padding: 0 20px;
+}
+
+#skipbtn img {
+    max-height: 100%;
+    max-width: 100%;
+    filter: brightness(0) saturate(100%) invert(30%) sepia(90%) saturate(5000%) hue-rotate(0deg) brightness(100%) contrast(100%);
+    transition: 0.2s;
+}
+
+#skipbtn:hover {
+    background-color: red;
+}
+
+#skipbtn:hover img {
+    filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+}
+
+#skipbtn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* ============================= */
+/* Progress Bar                  */
+/* ============================= */
 .progress {
     width: 100%;
     height: 6px;
@@ -89,7 +157,9 @@ body {
     transition: width 0.2s linear;
 }
 
-/* Input Field */
+/* ============================= */
+/* Input Field & Submit Button    */
+/* ============================= */
 #link {
     width: 100%;
     margin-top: 12px;
@@ -100,15 +170,14 @@ body {
     box-sizing: border-box;
 }
 
-/* Submit Song Button */
 #playbtn {
-    display: block;            /* Center button */
-    margin: 12px auto 0 auto;  /* Top spacing, centered horizontally */
+    display: block;
+    margin: 12px auto 0 auto;
     background-color: black;
     color: red;
     border: 2px solid red;
     border-radius: 8px;
-    padding: 12px 25px;        /* Bigger clickable area */
+    padding: 12px 25px;
     font-size: 16px;
     cursor: pointer;
     transition: 0.2s;
@@ -119,7 +188,9 @@ body {
     color: black;
 }
 
-/* Close Button */
+/* ============================= */
+/* Close Button                  */
+/* ============================= */
 .close {
     position: absolute;
     top: 12px;
@@ -131,7 +202,9 @@ body {
     cursor: pointer;
 }
 
-/* Volume Control */
+/* ============================= */
+/* Volume Control                */
+/* ============================= */
 .volwrap {
     margin-top: 15px;
     font-size: 12px;
@@ -144,4 +217,64 @@ body {
 input[type=range] {
     width: 60%;
     accent-color: red;
+}
+
+/* ============================= */
+/* RIGHT: Queue Panel            */
+/* ============================= */
+#queuePanel {
+    position: absolute;
+    top: 50%;
+    left: calc(50% + 240px);
+    transform: translateY(-50%);
+    width: 260px;
+    background: rgba(20, 20, 20, 0.95);
+    border-radius: 28px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 0 50px black;
+    overflow-y: auto;
+    max-height: 70vh;
+}
+
+/* Queue Header */
+.queuePanel h2 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    opacity: 0.9;
+}
+
+/* Queue List Scroll */
+#queueList {
+    max-height: 360px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Queue Items */
+.queue-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    font-size: 13px;
+}
+
+/* Queue Remove Button */
+.queue-item button {
+    background: none;
+    border: none;
+    color: red;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.queue-item button:hover {
+    color: white;
 }
