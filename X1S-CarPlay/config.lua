@@ -1,10 +1,10 @@
 Config = {}
 
 -- Who can control music
-Config.DriverOnly = true
+Config.DriverOnly = false
 
 -- Default volume
 Config.DefaultVolume = 0.5
 
 -- Distance sound travels
-Config.SoundDistance = 20.0
+Config.SoundDistance = 10.0
