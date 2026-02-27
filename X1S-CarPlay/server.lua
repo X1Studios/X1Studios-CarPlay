@@ -9,49 +9,178 @@ AddEventHandler('onResourceStart', function(resourceName)
  /_/ \_\  |_| |____/ 
 
   X1Studios CarPlay
+       v1.1.0
     ]])
 end)
 
-local queues = {}
+-------------------------------------------------
+-- Vehicle Queues
+-------------------------------------------------
+local vehicleQueues = {}
+-- [net] = { queue = {}, current = songObject }
 
-RegisterNetEvent('x1s:playSong', function(data)
-    local net = data.net
-    local link = data.link
+local function GetVehicleState(net)
+    if not vehicleQueues[net] then
+        vehicleQueues[net] = {
+            queue = {},
+            current = nil
+        }
+    end
+    return vehicleQueues[net]
+end
 
-    queues[net] = { link }
+local function BroadcastQueue(net)
+    local data = vehicleQueues[net]
+    if not data then
+        TriggerClientEvent("x1s:updateQueue", -1, net, {})
+        return
+    end
+
+    TriggerClientEvent("x1s:updateQueue", -1, net, data.queue)
+end
+
+-------------------------------------------------
+-- Play Next Song
+-------------------------------------------------
+local function PlayNext(net)
+    local data = vehicleQueues[net]
+    if not data then return end
+
+    TriggerClientEvent("x1s:destroyCarSound", -1, net)
+
+    data.current = nil
+
+    if #data.queue == 0 then
+        BroadcastQueue(net)
+        vehicleQueues[net] = nil
+        return
+    end
+
+    local nextSong = table.remove(data.queue, 1)
+    data.current = nextSong
 
     TriggerClientEvent('x1s:syncSong', -1, {
-        link = link,
-        net = net
+        link = nextSong.link,
+        net = net,
+        title = nextSong.title,
+        artist = nextSong.artist,
+        thumbnail = nextSong.thumbnail
     })
-end)
 
-RegisterNetEvent('x1s:skip', function(net)
-    if queues[net] then
-        queues[net] = nil
+    BroadcastQueue(net)
+end
+
+-------------------------------------------------
+-- Play Song / Add Queue
+-------------------------------------------------
+RegisterNetEvent('x1s:playSong', function(data)
+    if not data or not data.net or data.net <= 0 then return end
+
+    local net = data.net
+    local state = GetVehicleState(net)
+
+    local songData = {
+        link = data.link,
+        title = data.title or "Unknown Title",
+        artist = data.artist or "Unknown Artist",
+        thumbnail = data.thumbnail or ""
+    }
+
+    if not state.current then
+        state.current = songData
+
+        TriggerClientEvent('x1s:syncSong', -1, {
+            link = songData.link,
+            net = net,
+            title = songData.title,
+            artist = songData.artist,
+            thumbnail = songData.thumbnail
+        })
+
+        BroadcastQueue(net)
+        return
     end
+
+    table.insert(state.queue, songData)
+    BroadcastQueue(net)
 end)
 
+-------------------------------------------------
+-- Manual Skip
+-------------------------------------------------
+RegisterNetEvent('x1s:skip', function(net)
+    if not net then return end
+    if not vehicleQueues[net] then return end
+
+    PlayNext(net)
+end)
+
+-------------------------------------------------
+-- Auto Finish / Skip
+-------------------------------------------------
+local finishCooldown = {}
+
+RegisterNetEvent('x1s:songFinished', function(net)
+    if not net then return end
+    if not vehicleQueues[net] then return end
+
+    if finishCooldown[net] then return end
+    finishCooldown[net] = true
+
+    PlayNext(net)
+
+    SetTimeout(1500, function()
+        finishCooldown[net] = nil
+    end)
+end)
+
+-------------------------------------------------
+-- Remove From Queue
+-------------------------------------------------
+
+RegisterNetEvent("x1s:removeFromQueue", function(net, index)
+
+    local state = vehicleQueues[net]
+    if not state then return end
+    if not state.queue then return end
+
+    local removeIndex = tonumber(index)
+    if not removeIndex then return end
+
+    table.remove(state.queue, removeIndex + 1)
+
+    BroadcastQueue(net)
+end)
+
+-------------------------------------------------
+-- Volume Sync
+-------------------------------------------------
 RegisterNetEvent('x1s:setVolume', function(vol, net)
+    if not net then return end
     TriggerClientEvent('x1s:updateVolume', -1, vol, net)
 end)
 
+-------------------------------------------------
+-- Vehicle Delete Detection
+-------------------------------------------------
 CreateThread(function()
     while true do
-        Wait(250)
+        Wait(2000)
 
-        for net, link in pairs(queues) do
-            if link then
-                local veh = NetworkGetEntityFromNetworkId(net)
-                if veh and DoesEntityExist(veh) then
-                    local coords = GetEntityCoords(veh)
-                    TriggerClientEvent("x1s:updateCarPos", -1, net, coords)
-                end
+        for net, _ in pairs(vehicleQueues) do
+            local veh = NetworkGetEntityFromNetworkId(net)
+
+            if veh == 0 or not DoesEntityExist(veh) then
+                TriggerClientEvent("x1s:destroyCarSound", -1, net)
+                vehicleQueues[net] = nil
             end
         end
     end
 end)
 
+-------------------------------------------------
+-- Update Checker
+-------------------------------------------------
 local resourceName = GetCurrentResourceName()
 local currentVersion = GetResourceMetadata(resourceName, 'version', 0)
 
